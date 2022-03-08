@@ -1,6 +1,6 @@
 
 
-## Doing statistical and non-statistical things with R without tear 
+## Doing statistical and non-statistical things using R without tear 
 
 This site contains content material for a R introduction and workshop for research students and scholars at Orygen 11:00 AM – 2:00 PM, 10 March 2022. 
 
