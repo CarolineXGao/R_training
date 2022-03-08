@@ -186,7 +186,7 @@ knitr::include_graphics("graphics/Shiny CRT.png")
 .w-80[
 ```{r,echo=FALSE,out.width="100%"}
 # All defaults
-knitr::include_graphics("graphics/Reviews.png")
+knitr::include_graphics("graphics/reviews.png")
 ```
 ```{r,echo=FALSE,out.width="70%"}
 # All defaults
