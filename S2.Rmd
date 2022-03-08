@@ -1,0 +1,374 @@
+---
+title: "Doing statistical and non-statistical things with R without tears - Session 2"
+author: "Caroline Gao "
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    mathjax: null
+    css: assets/html_font.css
+---
+
+<style type="text/css">
+div.main-container {
+  max-width: 1600px !important;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+
+```{r}
+# load libraries
+library(pacman)
+p_load("tidyverse", "ggplot2", "here", "gridExtra", "kableExtra", "gtsummary", "Hmisc", "arsenal", "lme4", "missRanger", "mice", "broom.mixed", "DiagrammeR")
+```
+
+# Getting to know Rstudio 
+
+RStudio is an integrated development environment (IDE) that allows you to interact with R more readily. RStudio is similar to the standard RGui, but is considerably more user friendly. It has more drop-down menus, windows with multiple tabs, and many customization options. 
+
+See detailed introduction [here](http://sahirbhatnagar.com/EPIB607/basics.html)
+
+
+# R Markdown
+
+R Markdown is a system that integrates narrative, analysis, code and output to create a production quality document. The code and text were implemented via R in a *.Rmd file, which will be knit to Markdown file and then convert to file type of choice via Pandoc. There are a few important feature that makes it one of R's "killer" feature:
+
+* Reproducibility and transparency. All data processes can be integrated in to one central location to allow the work being reproduced and/or published easily. 
+
+* Easy progress tracking and debugging.  All code can be execute when you "Knit" the file and errors will be reported. You can also headers to indexing sections of your code and use hyperlinks to quickly locate to different sections. 
+
+* Communication. You can integrate narrative, code and results together. 
+
+* Very nice for equations. The standard LaTeX equations works with all types of outputs (when your equations are getting complicated, sometimes word doesn't work)
+
+* Extension. R Markdown system provides you will limitless extension capacities, such as integrating multiple languages (I can combine python, Stan and R in the same file now), producing multiple types of documents (word, html, pdf, slides, books, shiny app etc).
+
+See detailed introduction [here](https://rmarkdown.rstudio.com/lesson-1.html). 
+
+## Activity 
+
+Create a new R markdown file.
+
+
+# Basic R 
+
+## Basic operations
+
+```{r}
+1+2
+```
+
+```{r}
+a<-5
+a
+```
+
+```{r}
+6>7
+```
+
+```{r}
+1:10
+```
+
+
+
+## R data type and structure
+
+Main data type : 
+
+* character ("a", "abc")
+* numeric (1,1.4)
+* integer (2L)* 
+* logical (TRUE, FALSE)
+
+Main data structure: 
+
+* vector ( one dimensional & same data type )
+* matrix (two dimensional & same data type )
+* data frame/[tibble](https://tibble.tidyverse.org/) (two dimensional & different data type)  
+* list (as complex as you wish)
+
+
+```{r}
+# vector
+a<-c(1:5)
+a
+
+# matrix
+b<- matrix(  c("A", "B", "C", "D", "E", "F"), 
+        nrow=2,              # number of rows 
+        ncol=3,              # number of columns 
+        byrow = TRUE)
+b
+
+c<-as_tibble(b)
+c
+c$V4<-5
+c
+```
+```{r}
+d<-list(a=a,b=b,c=c)
+d
+```
+
+
+See detailed introduction [here](https://swcarpentry.github.io/r-novice-inflammation/13-supp-data-structures/)
+
+## Indexing 
+
+R can be indexed in different ways, primary using three operators: [ ],  [[ ]], and $. These indexing operators have slightly different functionalities.  
+
+```{r}
+b
+b[,1]
+b[[1]]
+b[[2]]
+
+c
+c[,1]
+c[[1]]
+c$V1
+
+d
+d[2]
+d[[2]]
+d[["b"]]
+d$b
+```
+
+
+## Function 
+
+A function is a set of statements organized together to perform a specific task. R has a large number of in-built functions and the user can create their own functions.
+
+```{r, eval=FALSE}
+function_name <- function(arg_1, arg_2, ...) {
+   Function body 
+}
+```
+
+```{r}
+round(0.56)
+round(0.56,1)
+```
+
+```{r,out.width="20%"}
+Dalek<-function(text=""){
+  if (text== "Exterminate") {
+    knitr::include_graphics("https://emoji.gg/assets/emoji/Dalek.png")
+  } else {
+    print("Exterminate")
+  }
+}
+Dalek("Hello")
+Dalek()
+Dalek("Exterminate")
+```
+
+## Activity 
+
+Save all even numbers between 1 and 20 in a vector with a name of ODD
+
+```{r}
+# try here 
+
+```
+
+
+# Import data 
+
+R can import different types of source data (e.g., csv, excel, SPSS, Stata, SAS. SQL etc). The most commonly used data type is csv files. 
+
+```{r}
+carSpeeds <- read_csv(file = 'data/car-speeds.csv') # or read.csv from the "utils" package
+```
+
+Inspect data 
+
+```{r}
+glimpse(carSpeeds)
+head(carSpeeds)
+str(carSpeeds)
+print(summarytools::dfSummary(carSpeeds, graph.magnif = 0.75), method = 'render')
+```
+
+## Activity 
+
+Download the LICHEN SPECIES data from webpage https://raw.githubusercontent.com/lneisenman/isl/master/data/Advertising.csv and import the data to R 
+
+```{r}
+# include your code here
+
+```
+
+
+
+
+
+# Data cleaning
+
+After the data is properly organised, you will need to start the data cleaning phase. A cleaned data is a dataset with:
+
+1. variables validated, ordered, clearly named and labelled,
+2. categorical variables properly categorized with clear labels, 
+3. derived and transformed variables properly included, and
+4. and the required format (by the analysis) established.
+
+## Modifying variables
+
+```{r}
+carSpeeds<-carSpeeds %>% 
+  mutate(Speed=ifelse(Speed<0,NA,Speed),
+         Color=as.factor(ifelse(Color=="Blac","Black",Color)),
+         Speed_over28=as.factor(Speed>28))
+
+table(carSpeeds$Speed_over28,exclude=NULL)
+
+```
+
+A range of functions from dplyr, such as mutate, select, filter, arrange, group_by etc, can be used to assist this process, see detailed introduction [here](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html).
+
+## Labelling data 
+
+Similar with Stata and SPSS, labels can be attached to dataframes and tibbles to allow easy interpretation of the data and better displaying of results. 
+
+```{r}
+label(carSpeeds)<-list( "Colour of the car",
+                     "Speed of the car (miles per hour)",
+                     "Registration state",
+                     "Speed over 28 miles per hour")
+# or labels(carSpeeds$Speed)<-"Speed of the car (miles per hour)"
+print(summarytools::dfSummary(carSpeeds, graph.magnif = 0.75), method = 'render')
+```
+
+
+
+## Reshape data between wide and long format. 
+
+It is common to have to work with both wide(or wider) and long(or longer) formats of the data during your data cleaning process. Many packages are available to assist with reshaping the data structure. Here we introduce two functions pivot_wider and pivot_longer from [*tidyr*](https://tidyr.tidyverse.org/index.html) 
+
+
+```{r , echo=FALSE,fig.align="center",out.width="100%"}
+knitr::include_graphics(here::here("graphics/pivot_wider_R.png"))
+knitr::include_graphics(here::here("graphics/pivot_longer_R.png"))
+```
+
+```{r}
+data(us_rent_income)
+us_rent_income[1:4]
+
+us_rent_income[1:4] %>%
+  pivot_wider(
+    names_from = variable,
+    values_from = c(estimate)
+  )
+```
+
+
+
+## Activity
+
+Discussion of common issues in data cleaning. 
+
+
+# Statistical analysis
+
+## Table 1
+
+A simple descriptive table, normally referred to as “Table 1”, is where your data story start. There are many R packages that generate Table 1 automatically. Here we introduce the [*tableby*](https://www.rdocumentation.org/packages/arsenal/versions/3.5.0/topics/tableby) function from  *arsenal*. 
+
+```{r, results= 'asis'}
+my_controls <- tableby.control(
+  test = T,
+  total = F,
+  digits = 1,
+  digits.pct = 1,
+  digits.p = 3,
+  numeric.test = "anova", cat.test = "chisq",
+  numeric.stats = c("meansd", "medianq1q3", "range", "Nmiss2"),
+  cat.stats = c("countpct", "Nmiss2"),
+  stats.labels = list(
+    meansd = "Mean (SD)",
+    medianq1q3 = "Median (Q1, Q3)",
+    range = "Min - Max",
+    Nmiss2 = "Missing"
+  )
+)
+table <- tableby(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width,
+  data = iris,
+  control = my_controls
+)
+
+summary(table,
+  title = "Characteristics by species in iris data"
+)
+```
+
+## Simple regression model 
+
+Most of statistical model in R follows very similar style of coding: 
+
+function( y~ x1 + x2 + x3, data=data, additional specifications)
+
+```{r}
+mod1 <- lm(Petal.Length ~ Species + Sepal.Width * Sepal.Length, data = iris)
+summary(mod1)
+# "Sepal.Width*Sepal.Length" is the interaction term.
+```
+
+R provide a range of diagnostic plots to evlaute model performance 
+```{r,fig.width=10,fig.height=5}
+par(mfrow = c(2, 2))
+plot(mod1)
+```
+
+
+The *tab_model* function from  [*sjPlot*](https://cran.r-project.org/web/packages/sjPlot/sjPlot.pdf) package can be used to display regression results from different models.
+
+```{r}
+library(sjPlot)
+tab_model(mod1)
+```
+
+
+
+## Activity 
+
+Using the iris data explore factors associated with Sepal.Width.
+```{r}
+# include your code here 
+
+```
+
+
+# Creating a plot 
+
+[*ggplot2*](https://ggplot2.tidyverse.org/) is a package that provides an extensive range of tools to create complex data visualisation. *ggplot2* refers to the name of the package itself. When using the package we use the function ggplot() to generate the plots. ggplot graphics are built layer by layer by adding new elements. Adding layers in this fashion allows for extensive flexibility and customization of plots.
+
+
+```{r}
+# classic cowplot theme
+ggplot(iris, aes(Sepal.Length, Sepal.Width, color = Species)) + 
+  geom_point()+
+  theme_bw() +
+  labs(x="Sepal length",y="Sepal width") 
+```
+
+## Activity 
+
+Explore iris dataset using ggplot build. 
+
+```{r}
+#install.packages('esquisse')
+data(iris)
+
+```
+
+Open Tools - > Addin - > esquisse -> choose iris data 
