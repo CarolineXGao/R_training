@@ -1,5 +1,5 @@
 ---
-title: "Doing statistical and non-statistical things with R without tears - Session 2"
+title: "Doing statistical and non-statistical things using R without tears - Session 2"
 author: "Caroline Gao "
 output: 
   html_document:
@@ -174,7 +174,7 @@ Dalek("Exterminate")
 
 ## Activity 
 
-Save all even numbers between 1 and 20 in a vector with a name of ODD
+Save all even numbers between 1 and 20 in a vector with a name of even. 
 
 ```{r}
 # try here 
