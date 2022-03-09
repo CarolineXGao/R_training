@@ -172,6 +172,7 @@ Dalek()
 Dalek("Exterminate")
 ```
 
+
 ## Activity 
 
 Save all even numbers between 1 and 20 in a vector with a name of even. 
@@ -184,24 +185,29 @@ Save all even numbers between 1 and 20 in a vector with a name of even.
 
 # Import data 
 
+## Read data
+
 R can import different types of source data (e.g., csv, excel, SPSS, Stata, SAS. SQL etc). The most commonly used data type is csv files. 
 
 ```{r}
 carSpeeds <- read_csv(file = 'data/car-speeds.csv') # or read.csv from the "utils" package
 ```
 
-Inspect data 
+## Inspect data 
 
 ```{r}
 glimpse(carSpeeds)
 head(carSpeeds)
 str(carSpeeds)
 print(summarytools::dfSummary(carSpeeds, graph.magnif = 0.75), method = 'render')
+table(carSpeeds$State)
 ```
 
 ## Activity 
 
-Download the LICHEN SPECIES data from webpage https://raw.githubusercontent.com/lneisenman/isl/master/data/Advertising.csv and import the data to R 
+Download the Advertising data from webpage: 
+https://raw.githubusercontent.com/CarolineXGao/R_training_2022/main/data/Advertising.csv
+Import the data to R. Inspect data and identify any issues. 
 
 ```{r}
 # include your code here
