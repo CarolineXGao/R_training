@@ -30,3 +30,8 @@ This site contains content material for a R introduction and workshop for resear
 ### Support or Contact
 
 If you are having trouble with any of the documents. Please contact caroline.gao@orygen.org.au
+
+### Reference 
+
+[Good Statistical Practice (GSP): guidance for using R for scientific publication](https://carolinexgao.github.io/GSP/Draft/GSP.pdf) 
+
