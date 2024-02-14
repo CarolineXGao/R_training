@@ -24,8 +24,8 @@ This site contains content material for a R introduction and workshop for resear
 ### Presentation slides and tutorial files can also be found 
 
 
-- <a href="https://carolinexgao.github.io/R_training_2022/S1.html">S1 Presentation slides</a>
-- <a href="https://carolinexgao.github.io/R_training_2022/S2.html">S2 Tutorial</a>
+- <a href="https://carolinexgao.github.io/R_training/S1.html">S1 Presentation slides</a>
+- <a href="https://carolinexgao.github.io/R_training/S2.html">S2 Tutorial</a>
 
 ### Support or Contact
 
